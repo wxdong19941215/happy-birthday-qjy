@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <title>生日快乐 🎂</title>
-    <meta name="description" content="精美生日快乐祝福页，含烟花、气球、彩带与背景音乐。支持名字定制与分享链接。" />
     <style>
         /* ————— 基础与主题变量 ————— */
         :root {
@@ -293,7 +292,6 @@
             <div class="actions">
                 <button id="playBtn" class="btn">▶️ 开启音乐与烟花</button>
                 <button id="confettiBtn" class="btn secondary">🎊 再放一波彩带</button>
-                <button id="shareBtn" class="btn secondary">🔗 复制祝福链接</button>
             </div>
             <p class="wish"><span class="typewriter" id="tw"></span></p>
         </div>
@@ -303,236 +301,232 @@
     <div class="gate" id="gate">
         <div class="inner">
             <h2>准备好迎接惊喜了吗？🎂</h2>
-            <p>点击下方按钮即可开启音乐、烟花和彩带效果。可用 <code>?name=小明<\/code> 定制名字，或用 <code>?bgm=音乐链接<\/code> 指定背景音乐（需有使用授权）。<\/p>
-      <button id="gateBtn" class="btn">✨ 一键开启</button>
+            <button id="gateBtn" class="btn">✨ 一键开启</button>
+        </div>
     </div>
-  </div>
 
-  <!-- 气球（不同延迟/轨迹） -->
-  <div class="balloon" style="left:6%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#fb7185,#f43f5e); animation-duration: 17s; --x: -40px;"></div>
-  <div class="balloon" style="left:22%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#60a5fa,#3b82f6); animation-duration: 20s; --x: 30px; animation-delay: 2s"></div>
-  <div class="balloon" style="left:48%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#34d399,#10b981); animation-duration: 19s; --x: -10px; animation-delay: 3.3s"></div>
-  <div class="balloon" style="left:72%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#f59e0b,#f97316); animation-duration: 22s; --x: 60px; animation-delay: 1.2s"></div>
-  <div class="balloon" style="left:90%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#a78bfa,#8b5cf6); animation-duration: 18s; --x: -30px; animation-delay: 4.6s"></div>
+    <!-- 气球（不同延迟/轨迹） -->
+    <div class="balloon"
+        style="left:6%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#fb7185,#f43f5e); animation-duration: 17s; --x: -40px;">
+    </div>
+    <div class="balloon"
+        style="left:22%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#60a5fa,#3b82f6); animation-duration: 20s; --x: 30px; animation-delay: 2s">
+    </div>
+    <div class="balloon"
+        style="left:48%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#34d399,#10b981); animation-duration: 19s; --x: -10px; animation-delay: 3.3s">
+    </div>
+    <div class="balloon"
+        style="left:72%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#f59e0b,#f97316); animation-duration: 22s; --x: 60px; animation-delay: 1.2s">
+    </div>
+    <div class="balloon"
+        style="left:90%; background: radial-gradient(circle at 30% 30%, #fff5, transparent 60%), linear-gradient(180deg,#a78bfa,#8b5cf6); animation-duration: 18s; --x: -30px; animation-delay: 4.6s">
+    </div>
 
-  <div class="glints" id="glints"></div>
+    <div class="glints" id="glints"></div>
 
-  <audio id="bgm" preload="auto" loop style="display:none"></audio>
+    <audio id="bgm" preload="auto" loop style="display:none"></audio>
 
-  <script>
-    /*
-     * 使用方法：
-     * 1) 直接打开本 HTML。首次需点击页面按钮以播放音乐（浏览器策略）。
-     * 2) 在链接后加 ?name=你的名字 定制：例如 index.html?name=小美
-     * 3) 也可以点击“复制祝福链接”直接生成个性化分享。
-     *
-     * 音乐实现：WebAudio 演奏《Happy Birthday》旋律（无需外链 mp3）。
-     */
+    <script>
+        /*
+         * 使用方法：
+         * 1) 直接打开本 HTML。首次需点击页面按钮以播放音乐（浏览器策略）。
+         * 2) 在链接后加 ?name=你的名字 定制：例如 index.html?name=小美
+         * 3) 也可以点击“复制祝福链接”直接生成个性化分享。
+         *
+         * 音乐实现：WebAudio 演奏《Happy Birthday》旋律（无需外链 mp3）。
+         */
 
-    // —— 工具：获取 URL 参数 ——
-    const params = new URLSearchParams(location.search);
-    const userName = decodeURIComponent(params.get('name') || '') || '钱嘉莹';
-    document.getElementById('who').textContent = userName;
+        // —— 工具：获取 URL 参数 ——
+        const params = new URLSearchParams(location.search);
+        const userName = decodeURIComponent(params.get('name') || '') || '钱嘉莹';
+        document.getElementById('who').textContent = userName;
 
-    // —— 打字机祝福 ——
-    const lines = [
-        `愿 ${userName} 的每一天都闪闪发光 ✨`,
-        '健康常在，笑容常开；',
-        '愿所想皆所成，所盼皆可期。',
-        'Happy Birthday & Best Wishes!'
-    ];
-    const twEl = document.getElementById('tw');
-    let twI = 0, charI = 0;
-    function typeLoop() {
-        if (twI >= lines.length) { twI = 0; twEl.textContent = ''; charI = 0; setTimeout(typeLoop, 1200); return; }
-        const target = lines[twI];
-        if (charI <= target.length) {
-            twEl.textContent = target.slice(0, charI++);
-            setTimeout(typeLoop, 50 + Math.random() * 60);
-        } else {
-            setTimeout(() => { twI++; charI = 0; }, 1400);
-            setTimeout(typeLoop, 1400);
-        }
-    }
-    typeLoop();
-
-    // —— 星星背景 ——
-    const starCanvas = document.querySelector('.stars');
-    const sctx = starCanvas.getContext('2d');
-    let stars = [];
-    function resizeStars() {
-        starCanvas.width = innerWidth; starCanvas.height = innerHeight; stars = new Array(180).fill(0).map(() => ({
-            x: Math.random() * innerWidth,
-            y: Math.random() * innerHeight,
-            r: Math.random() * 1.6 + 0.2,
-            a: Math.random() * 0.7 + 0.3,
-            v: Math.random() * 0.3 + 0.05
-        }));
-    }
-    window.addEventListener('resize', resizeStars); resizeStars();
-    (function drawStars() {
-        sctx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-        for (const st of stars) {
-            sctx.globalAlpha = st.a + Math.sin(performance.now() * 0.002 * st.v) * 0.4;
-            sctx.beginPath(); sctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); sctx.fillStyle = '#fff'; sctx.fill();
-        }
-        requestAnimationFrame(drawStars);
-    })();
-
-    // —— 闪光点 ——
-    const glints = document.getElementById('glints');
-    for (let i = 0; i < 28; i++) {
-        const g = document.createElement('div'); g.className = 'glint';
-        g.style.left = Math.random() * 100 + '%';
-        g.style.top = Math.random() * 100 + '%';
-        g.style.animationDuration = (3 + Math.random() * 3).toFixed(2) + 's';
-        glints.appendChild(g);
-    }
-
-    // —— 彩带/烟花画布 ——
-    const canvas = document.getElementById('fxCanvas');
-    const ctx = canvas.getContext('2d');
-    let W = 0, H = 0; function fit() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; } fit(); window.addEventListener('resize', fit);
-
-    const confetti = [];
-    function burst(x = W / 2, y = H * 0.35, count = 140) {
-        for (let i = 0; i < count; i++) {
-            confetti.push({
-                x, y,
-                vx: (Math.random() * 2 - 1) * 6,
-                vy: (Math.random() * 2 - 1) * 6 - 5,
-                g: 0.18 + Math.random() * 0.12,
-                w: 6 + Math.random() * 6,
-                h: 10 + Math.random() * 14,
-                r: Math.random() * Math.PI,
-                vr: (Math.random() * 2 - 1) * 0.25,
-                c: `hsl(${Math.random() * 360}, 90%, 60%)`,
-                life: 120 + Math.random() * 60
-            });
-        }
-    }
-
-    const fireworks = [];
-    function launch() {
-        const x = Math.random() * W * 0.8 + W * 0.1; const y = H * 0.9;
-        const color = `hsl(${Math.random() * 360}, 90%, 60%)`;
-        fireworks.push({ x, y, t: 0, phase: 'up', vx: 0, vy: - (8 + Math.random() * 4), color });
-    }
-
-    function explode(fw) {
-        for (let i = 0; i < 90; i++) {
-            const a = Math.random() * Math.PI * 2; const sp = Math.random() * 5 + 1.5;
-            confetti.push({
-                x: fw.x, y: fw.y,
-                vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-                g: 0.05,
-                w: 3, h: 3,
-                r: Math.random() * Math.PI,
-                vr: (Math.random() * 2 - 1) * 0.3,
-                c: fw.color,
-                life: 140 + Math.random() * 40
-            });
-        }
-    }
-
-    setInterval(() => { launch(); }, 1800 + Math.random() * 800);
-
-    function tick() {
-        ctx.clearRect(0, 0, W, H);
-        // fireworks
-        for (let i = fireworks.length - 1; i >= 0; i--) {
-            const f = fireworks[i];
-            if (f.phase === 'up') {
-                f.vy += 0.08; // gravity
-                f.x += f.vx; f.y += f.vy;
-                ctx.beginPath(); ctx.arc(f.x, f.y, 2.2, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
-                ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x, f.y + 16); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.stroke();
-                if (f.vy >= 0) { f.phase = 'boom'; explode(f); fireworks.splice(i, 1); }
+        // —— 打字机祝福 ——
+        const lines = [
+            `愿 ${userName} 的每一天都闪闪发光 ✨`,
+            '健康常在，笑容常开；',
+            '愿所想皆所成，所盼皆可期。',
+            'Happy Birthday & Best Wishes!'
+        ];
+        const twEl = document.getElementById('tw');
+        let twI = 0, charI = 0;
+        function typeLoop() {
+            if (twI >= lines.length) { twI = 0; twEl.textContent = ''; charI = 0; setTimeout(typeLoop, 1200); return; }
+            const target = lines[twI];
+            if (charI <= target.length) {
+                twEl.textContent = target.slice(0, charI++);
+                setTimeout(typeLoop, 50 + Math.random() * 60);
+            } else {
+                setTimeout(() => { twI++; charI = 0; }, 1400);
+                setTimeout(typeLoop, 1400);
             }
         }
-        // confetti
-        for (let i = confetti.length - 1; i >= 0; i--) {
-            const p = confetti[i];
-            p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life -= 1;
-            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
-            ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
-            if (p.y > H + 60 || p.x < -60 || p.x > W + 60 || p.life <= 0) { confetti.splice(i, 1); }
+        typeLoop();
+
+        // —— 星星背景 ——
+        const starCanvas = document.querySelector('.stars');
+        const sctx = starCanvas.getContext('2d');
+        let stars = [];
+        function resizeStars() {
+            starCanvas.width = innerWidth; starCanvas.height = innerHeight; stars = new Array(180).fill(0).map(() => ({
+                x: Math.random() * innerWidth,
+                y: Math.random() * innerHeight,
+                r: Math.random() * 1.6 + 0.2,
+                a: Math.random() * 0.7 + 0.3,
+                v: Math.random() * 0.3 + 0.05
+            }));
         }
-        requestAnimationFrame(tick);
-    }
-    tick();
+        window.addEventListener('resize', resizeStars); resizeStars();
+        (function drawStars() {
+            sctx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+            for (const st of stars) {
+                sctx.globalAlpha = st.a + Math.sin(performance.now() * 0.002 * st.v) * 0.4;
+                sctx.beginPath(); sctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); sctx.fillStyle = '#fff'; sctx.fill();
+            }
+            requestAnimationFrame(drawStars);
+        })();
 
-    // 初始彩带来一发
-    setTimeout(() => burst(), 900);
+        // —— 闪光点 ——
+        const glints = document.getElementById('glints');
+        for (let i = 0; i < 28; i++) {
+            const g = document.createElement('div'); g.className = 'glint';
+            g.style.left = Math.random() * 100 + '%';
+            g.style.top = Math.random() * 100 + '%';
+            g.style.animationDuration = (3 + Math.random() * 3).toFixed(2) + 's';
+            glints.appendChild(g);
+        }
 
-    // —— 音乐：外部 BGM（支持 ?bgm=URL），默认使用 cute_woman.mp3 ——
-    let isPlaying = false;
-    const bgmEl = document.getElementById('bgm');
-    const bgmParam = params.get('bgm');
-    if (bgmParam) {
-        bgmEl.src = decodeURIComponent(bgmParam);
-    } else {
-        bgmEl.src = 'M500004VR0Hn3bkqqE.mp3'; // 将你合法获取的周杰伦《可爱女人》mp3 放在同目录并命名为此文件即可
-    }
-    function fadeInAudio(el, target = 1, ms = 1200) {
-        el.volume = 0; const steps = 30; const dt = ms / steps; let i = 0;
-        const id = setInterval(() => { i++; el.volume = Math.min(target, i / steps * target); if (i >= steps) clearInterval(id); }, dt);
-    }
-    async function startMusic() {
-        try { await bgmEl.play(); fadeInAudio(bgmEl, 1, 1200); isPlaying = true; playBtn.textContent = '⏸️ 暂停音乐'; }
-        catch (e) { startMelodyFallback(); }
-    }
-    function toggleMusic() {
-        if (!isPlaying) { startMusic(); return; }
-        bgmEl.pause(); isPlaying = false; playBtn.textContent = '▶️ 开启音乐与烟花';
-    }
+        // —— 彩带/烟花画布 ——
+        const canvas = document.getElementById('fxCanvas');
+        const ctx = canvas.getContext('2d');
+        let W = 0, H = 0; function fit() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; } fit(); window.addEventListener('resize', fit);
 
-    // —— Fallback：如果外链/本地音乐播放失败，用 WebAudio 播放《生日快乐》旋律 ——
-    let audioCtx, tempo = 120; // BPM
-    const melody = [[392, 1], [392, 1], [440, 2], [392, 2], [523, 2], [494, 4], [392, 1], [392, 1], [440, 2], [392, 2], [587, 2], [523, 4], [392, 1], [392, 1], [784, 2], [659, 2], [523, 2], [494, 2], [440, 2], [698, 1], [698, 1], [659, 2], [523, 2], [587, 2], [523, 4]];
-    function playNote(freq, time, duration) { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, time); gain.gain.setValueAtTime(0.0001, time); gain.gain.exponentialRampToValueAtTime(0.3, time + 0.02); gain.gain.exponentialRampToValueAtTime(0.0001, time + duration * 0.92); osc.connect(gain).connect(audioCtx.destination); osc.start(time); osc.stop(time + duration); }
-    function startMelodyFallback() {
-        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-        const beat = 60 / tempo; let t = audioCtx.currentTime + 0.05; let loopDur = 0; isPlaying = true; playBtn.textContent = '⏸️ 暂停音乐';
-        melody.forEach(([f, b]) => { const d = beat * b; playNote(f, t, d); t += d * 1.05; loopDur += d * 1.05; });
-        const loop = () => { if (!isPlaying) return; let t2 = audioCtx.currentTime + 0.05; melody.forEach(([f, b]) => { const d = beat * b; playNote(f, t2, d); t2 += d * 1.05; }); setTimeout(loop, loopDur * 1000); };
-        setTimeout(loop, loopDur * 1000);
-    }
+        const confetti = [];
+        function burst(x = W / 2, y = H * 0.35, count = 140) {
+            for (let i = 0; i < count; i++) {
+                confetti.push({
+                    x, y,
+                    vx: (Math.random() * 2 - 1) * 6,
+                    vy: (Math.random() * 2 - 1) * 6 - 5,
+                    g: 0.18 + Math.random() * 0.12,
+                    w: 6 + Math.random() * 6,
+                    h: 10 + Math.random() * 14,
+                    r: Math.random() * Math.PI,
+                    vr: (Math.random() * 2 - 1) * 0.25,
+                    c: `hsl(${Math.random() * 360}, 90%, 60%)`,
+                    life: 120 + Math.random() * 60
+                });
+            }
+        }
 
-    // —— 交互 ——
-    const playBtn = document.getElementById('playBtn');
-    const confettiBtn = document.getElementById('confettiBtn');
-    const shareBtn = document.getElementById('shareBtn');
-    const gate = document.getElementById('gate');
-    const gateBtn = document.getElementById('gateBtn');
+        const fireworks = [];
+        function launch() {
+            const x = Math.random() * W * 0.8 + W * 0.1; const y = H * 0.9;
+            const color = `hsl(${Math.random() * 360}, 90%, 60%)`;
+            fireworks.push({ x, y, t: 0, phase: 'up', vx: 0, vy: - (8 + Math.random() * 4), color });
+        }
 
-    function openAll() { gate.classList.add('hidden'); startMusic(); burst(); }
+        function explode(fw) {
+            for (let i = 0; i < 90; i++) {
+                const a = Math.random() * Math.PI * 2; const sp = Math.random() * 5 + 1.5;
+                confetti.push({
+                    x: fw.x, y: fw.y,
+                    vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+                    g: 0.05,
+                    w: 3, h: 3,
+                    r: Math.random() * Math.PI,
+                    vr: (Math.random() * 2 - 1) * 0.3,
+                    c: fw.color,
+                    life: 140 + Math.random() * 40
+                });
+            }
+        }
 
-    playBtn.addEventListener('click', () => {
-        if (gate.classList.contains('hidden')) {
-            toggleMusic();
+        setInterval(() => { launch(); }, 1800 + Math.random() * 800);
+
+        function tick() {
+            ctx.clearRect(0, 0, W, H);
+            // fireworks
+            for (let i = fireworks.length - 1; i >= 0; i--) {
+                const f = fireworks[i];
+                if (f.phase === 'up') {
+                    f.vy += 0.08; // gravity
+                    f.x += f.vx; f.y += f.vy;
+                    ctx.beginPath(); ctx.arc(f.x, f.y, 2.2, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x, f.y + 16); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.stroke();
+                    if (f.vy >= 0) { f.phase = 'boom'; explode(f); fireworks.splice(i, 1); }
+                }
+            }
+            // confetti
+            for (let i = confetti.length - 1; i >= 0; i--) {
+                const p = confetti[i];
+                p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life -= 1;
+                ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+                ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+                if (p.y > H + 60 || p.x < -60 || p.x > W + 60 || p.life <= 0) { confetti.splice(i, 1); }
+            }
+            requestAnimationFrame(tick);
+        }
+        tick();
+
+        // 初始彩带来一发
+        setTimeout(() => burst(), 900);
+
+        // —— 音乐：外部 BGM（支持 ?bgm=URL），默认使用 cute_woman.mp3 ——
+        let isPlaying = false;
+        const bgmEl = document.getElementById('bgm');
+        const bgmParam = params.get('bgm');
+        if (bgmParam) {
+            bgmEl.src = decodeURIComponent(bgmParam);
         } else {
-            openAll();
+            bgmEl.src = 'M500004VR0Hn3bkqqE.mp3'; // 将你合法获取的周杰伦《可爱女人》mp3 放在同目录并命名为此文件即可
         }
-    });
-    gateBtn.addEventListener('click', openAll);
-
-    confettiBtn.addEventListener('click', () => {
-        burst(W / 2 + (Math.random() * 200 - 100), H * 0.35 + (Math.random() * 120 - 60), 180);
-    });
-
-    shareBtn.addEventListener('click', async () => {
-        const url = new URL(location.href);
-        url.searchParams.set('name', userName);
-        if (bgmParam) url.searchParams.set('bgm', bgmParam);
-        try {
-            await navigator.clipboard.writeText(url.toString());
-            shareBtn.textContent = '✅ 已复制链接';
-            setTimeout(() => shareBtn.textContent = '🔗 复制祝福链接', 1600);
-        } catch {
-            prompt('复制这个链接分享给 TA：', url.toString());
+        function fadeInAudio(el, target = 1, ms = 1200) {
+            el.volume = 0; const steps = 30; const dt = ms / steps; let i = 0;
+            const id = setInterval(() => { i++; el.volume = Math.min(target, i / steps * target); if (i >= steps) clearInterval(id); }, dt);
         }
-    });
-</script>
+        async function startMusic() {
+            try { await bgmEl.play(); fadeInAudio(bgmEl, 1, 1200); isPlaying = true; playBtn.textContent = '⏸️ 暂停音乐'; }
+            catch (e) { startMelodyFallback(); }
+        }
+        function toggleMusic() {
+            if (!isPlaying) { startMusic(); return; }
+            bgmEl.pause(); isPlaying = false; playBtn.textContent = '▶️ 开启音乐与烟花';
+        }
+
+        // —— Fallback：如果外链/本地音乐播放失败，用 WebAudio 播放《生日快乐》旋律 ——
+        let audioCtx, tempo = 120; // BPM
+        const melody = [[392, 1], [392, 1], [440, 2], [392, 2], [523, 2], [494, 4], [392, 1], [392, 1], [440, 2], [392, 2], [587, 2], [523, 4], [392, 1], [392, 1], [784, 2], [659, 2], [523, 2], [494, 2], [440, 2], [698, 1], [698, 1], [659, 2], [523, 2], [587, 2], [523, 4]];
+        function playNote(freq, time, duration) { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, time); gain.gain.setValueAtTime(0.0001, time); gain.gain.exponentialRampToValueAtTime(0.3, time + 0.02); gain.gain.exponentialRampToValueAtTime(0.0001, time + duration * 0.92); osc.connect(gain).connect(audioCtx.destination); osc.start(time); osc.stop(time + duration); }
+        function startMelodyFallback() {
+            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            const beat = 60 / tempo; let t = audioCtx.currentTime + 0.05; let loopDur = 0; isPlaying = true; playBtn.textContent = '⏸️ 暂停音乐';
+            melody.forEach(([f, b]) => { const d = beat * b; playNote(f, t, d); t += d * 1.05; loopDur += d * 1.05; });
+            const loop = () => { if (!isPlaying) return; let t2 = audioCtx.currentTime + 0.05; melody.forEach(([f, b]) => { const d = beat * b; playNote(f, t2, d); t2 += d * 1.05; }); setTimeout(loop, loopDur * 1000); };
+            setTimeout(loop, loopDur * 1000);
+        }
+
+        // —— 交互 ——
+        const playBtn = document.getElementById('playBtn');
+        const confettiBtn = document.getElementById('confettiBtn');
+        const gate = document.getElementById('gate');
+        const gateBtn = document.getElementById('gateBtn');
+
+        function openAll() { gate.classList.add('hidden'); startMusic(); burst(); }
+
+        playBtn.addEventListener('click', () => {
+            if (gate.classList.contains('hidden')) {
+                toggleMusic();
+            } else {
+                openAll();
+            }
+        });
+        gateBtn.addEventListener('click', openAll);
+
+        confettiBtn.addEventListener('click', () => {
+            burst(W / 2 + (Math.random() * 200 - 100), H * 0.35 + (Math.random() * 120 - 60), 180);
+        });
+    </script>
 </body>
+
 </html>
